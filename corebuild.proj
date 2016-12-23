@@ -38,10 +38,22 @@
 		<PackageFile Include="src\Windows.Injector.targets" Kind="build" />
 	</ItemGroup>
 
-	<Target Name="Build" BeforeTargets="GetPackageContents">
+	<Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
 		<MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)">
 			<Output TaskParameter="TargetOutputs" ItemName="PackageFile" />
 		</MSBuild>
+	
+		<ItemGroup>
+			<SignInclude Include="%2A.dll" />
+			<SignInclude Include="%2A.exe" />
+			<SignTarget Include="$(PackageTargetPath)" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+
+		<WriteLinesToFile Lines="@(SignInclude)" File="$(Out)\sign-include.txt" Overwrite="true" />
+		<WriteLinesToFile Lines="@(SignExclude)" File="$(Out)\sign-exclude.txt" Overwrite="true" />
+		<WriteLinesToFile Lines="@(SignTarget)" File="$(Out)\sign-target.txt" Overwrite="true" />	
 	</Target>
 
 	<Target Name="Push" DependsOnTargets="DownloadNuGet;GetPackageTargetPath">
