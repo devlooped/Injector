@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- Import NuGet.targets for Restore -->
+	<PropertyGroup>
+		<NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'==''">$(MSBuildExtensionsPath)\..\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
+	</PropertyGroup>
+	<Import Condition="Exists('$(NuGetRestoreTargets)')" Project="$(NuGetRestoreTargets)" />
+	<Import Condition="'$(CoreBuildPropsImported)' == ''" Project="corebuild.props" />
+
+	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets')" />
+
+	<!-- Unfortunately, NuGet restore depends on this target for its _GenerateRestoreProjectReferencePaths target -->
+	<Target Name="_SplitProjectReferencesByFileExistence" />
+	
+	<ItemGroup>
+		<PackageReference Include="CoreBuild.Updater" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="MSBuilder.XmlPoke" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<ETag>70fb836006f324cfafbd3c170287b578dcb40414</ETag>
+	</PropertyGroup>
+
+	<!-- If we're being imported from another project, import the update-all version of Update -->
+	<Import Project="update.targets" Condition="'$(MSBuildProjectFullPath)' != '(MSBuildThisFileFullPath)' And '$(IsUpdating)' != 'true'" />	
+</Project>

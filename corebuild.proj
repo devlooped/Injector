@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="corebuild\corebuild.props" />
+
+	<ItemGroup>
+		<!-- MSBuild /t:Restore will restore this package like in .NETCore -->
+		<PackageReference Include="NuGet.Build.Packaging" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="GitInfo" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+		<IsPackagingProject>true</IsPackagingProject>
+		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
+		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+
+		<PackageId>Windows.Injector</PackageId>
+		<Authors>Xamarin</Authors>
+		<Description>Allows injecting .NET code into a remote process on Windows</Description>
+	</PropertyGroup>
+
+	<Target Name="Clean">
+		<Exec Command="rmdir corebuild\.nuget /S /Q" Condition="Exists('corebuild\.nuget')" />
+	</Target>
+
+	<ItemGroup>
+		<PackageFile Include="src\Windows.Injector.props" Kind="build" />
+		<PackageFile Include="src\Windows.Injector.targets" Kind="build" />
+	</ItemGroup>
+	
+	<Target Name="Build" BeforeTargets="GetPackageContents">
+		<MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)">
+			<Output TaskParameter="TargetOutputs" ItemName="PackageFile" />
+		</MSBuild>
+	</Target>
+
+	<Target Name="GitVersion" />
+	<Import Project="corebuild\corebuild.targets" />
+
+	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+</Project>
