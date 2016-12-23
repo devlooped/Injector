@@ -8,7 +8,7 @@
 
 		<MSBuild Projects="$(MSBuildProjectFullPath)" 
 				 Targets="Build" 
-				 Properties="VisualStudioVersion=$(VisualStudioVersion);Platform=%(TargetConfiguration.Platform)" />
+				 Properties="Platform=%(TargetConfiguration.Platform)" />
 
 		<ItemGroup>
 			<_BuiltOutput Include="$(MSBuildProjectDirectory)\bin\%(TargetConfiguration.Platform)\$(Configuration)\*.*">
