@@ -58,7 +58,7 @@
 
 	<Target Name="Push" DependsOnTargets="DownloadNuGet;GetPackageTargetPath">
 		<Error Text="No NuGetApiKey property was provided for the nuget push operation." Condition="'$(NuGetApiKey)' == ''" />
-		<Exec Command='$(NuGet) Push %($(PackageTargetPath) -Source $(NuGetRepo) -ApiKey $(NuGetApiKey)'
+		<Exec Command='$(NuGet) Push $(PackageTargetPath) -Source $(NuGetRepo) -ApiKey $(NuGetApiKey)'
 			  StandardErrorImportance="high"
 			  StandardOutputImportance="normal"
 			  ConsoleToMSBuild="true"
