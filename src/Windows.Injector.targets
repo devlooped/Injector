@@ -3,7 +3,7 @@
 	
 	<ItemGroup Condition="'$(IncludeWindowsInjectorContent)' == 'true'">
 		<Content Include="$(WindowsInjectorToolsPath)\**\*.*">
-			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Link>Injector\%(RecursiveDir)%(Filename)%(Extension)</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<IncludeInVSIX>true</IncludeInVSIX>
 		</Content>
