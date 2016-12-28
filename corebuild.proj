@@ -19,7 +19,7 @@
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 
 		<PackageId>Windows.Injector</PackageId>
-		<Authors>Xamarin</Authors>
+		<Authors>Cory Plotts</Authors>
 		<Description>Allows injecting .NET code into a remote process on Windows</Description>
 
 		<Out Condition="'$(Out)' == ''">out</Out>
