@@ -1,0 +1,9 @@
+bin
+obj
+*.VC.db
+*.opendb
+*.user
+*.suo
+*.cache
+corebuild/.nuget
+out/
