@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="build\corebuild.props" />
+
+	<ItemGroup>
+		<!-- MSBuild /t:Restore will restore these packages -->
+		<PackageReference Include="NuGet.Build.Packaging" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="GitInfo" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+		<IsPackagingProject>true</IsPackagingProject>
+		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
+		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+
+		<PackageId>Windows.Injector</PackageId>
+		<Authors>Cory Plotts</Authors>
+		<Description>Allows injecting .NET code into a remote process on Windows</Description>
+
+		<Out Condition="'$(Out)' == ''">out</Out>
+		<PackageOutputPath>$(Out)</PackageOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageFile Include="src\Windows.Injector.props" Kind="build" />
+		<PackageFile Include="src\Windows.Injector.targets" Kind="build" />
+	</ItemGroup>
+
+	<Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
+		<MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)">
+			<Output TaskParameter="TargetOutputs" ItemName="PackageFile" />
+		</MSBuild>
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+</Target>
+
+	<Target Name="GitVersion" />
+	<Import Project="build\corebuild.targets" />
+
+	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+</Project>
