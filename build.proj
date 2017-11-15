@@ -14,8 +14,7 @@
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
 		<IsPackagingProject>true</IsPackagingProject>
-		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
-		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+		<InferPackageContents>false</InferPackageContents>
 
 		<PackageId>Windows.Injector</PackageId>
 		<Authors>Cory Plotts</Authors>
@@ -23,7 +22,7 @@
 		<PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
 		<PackageIconUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/Icon.png</PackageIconUrl>
-		
+
 		<Out Condition="'$(Out)' == ''">out</Out>
 		<PackageOutputPath>$(Out)</PackageOutputPath>
 	</PropertyGroup>
@@ -38,7 +37,7 @@
 			<Output TaskParameter="TargetOutputs" ItemName="PackageFile" />
 		</MSBuild>
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-</Target>
+	</Target>
 
 	<Target Name="GitVersion" />
 	<Import Project="build\corebuild.targets" />
