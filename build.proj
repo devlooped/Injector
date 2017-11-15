@@ -20,6 +20,8 @@
 		<PackageId>Windows.Injector</PackageId>
 		<Authors>Cory Plotts</Authors>
 		<Description>Allows injecting .NET code into a remote process on Windows</Description>
+		<PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
+		<PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
 
 		<Out Condition="'$(Out)' == ''">out</Out>
 		<PackageOutputPath>$(Out)</PackageOutputPath>
@@ -42,7 +44,12 @@
 
 	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
 		<PropertyGroup>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+			<PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
+			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch)+git.$(GitCommit)</PackageVersion>
+			<PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)Readme.md'))
+
+Built from $(PackageProjectUrl)/commit/$(GitCommit)
+			</PackageReleaseNotes>
 		</PropertyGroup>
 	</Target>
 </Project>
