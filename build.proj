@@ -16,7 +16,7 @@
 		<IsPackagingProject>true</IsPackagingProject>
 		<InferPackageContents>false</InferPackageContents>
 
-		<PackageId>Windows.Injector</PackageId>
+		<PackageId>Xamarin.Windows.Injector</PackageId>
 		<Authors>Cory Plotts</Authors>
 		<Description>Allows injecting .NET code into a remote process on Windows</Description>
 		<PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
@@ -28,8 +28,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageFile Include="src\Windows.Injector.props" Kind="build" />
-		<PackageFile Include="src\Windows.Injector.targets" Kind="build" />
+		<PackageFile Include="src\Windows.Injector.props" PackagePath="build\Xamarin.Windows.Injector.props" />
+		<PackageFile Include="src\Windows.Injector.targets" PackagePath="build\Xamarin.Windows.Injector.targets" />
 	</ItemGroup>
 
 	<Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
