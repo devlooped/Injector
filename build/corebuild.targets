@@ -29,8 +29,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectCapability Remove="PackagingProject;ProjectReferences;ProjectConfigurationsInferredFromUsage;DependenciesTree;AssemblyReferences;OutputGroups;AllTargetOutputGroups;VisualStudioWellKnownOutputGroups;SingleFileGenerators;DeclaredSourceItems;UserSourceItems;ReferenceManagerAssemblies;ReferenceManagerBrowse;ReferenceManagerProjects" />
+  </ItemGroup>
+  
   <PropertyGroup>
-    <ETag>0cefd589a7799c4500986c9184421f6a89b7de51</ETag>
+    <ETag>9ade65eb29185d14814ce216b8dd6d15b95116a3</ETag>
   </PropertyGroup>
 
   <!-- If we're being imported from another project, import the update-all version of Update -->
