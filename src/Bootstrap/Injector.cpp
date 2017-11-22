@@ -106,12 +106,14 @@ LRESULT __stdcall MessageHookProc(int nCode, WPARAM wparam, LPARAM lparam)
 			cli::array<System::String^>^ methodSplit = acmSplit[2]->Split(':');
 
 			cli::array<System::Object^>^ methodParams = nullptr;
-			cli::array<System::Type^>^ methodParamTypes = nullptr;
+			cli::array<System::Type^>^ methodParamTypes = gcnew cli::array<System::Type^>(0);
 			if (methodSplit->Length > 1) {
 				methodParams = gcnew cli::array<System::Object^>(methodSplit->Length - 1);
 				methodParamTypes = gcnew cli::array<System::Type^>(methodSplit->Length - 1);
 				for (int i = 1; i < methodSplit->Length; i++) {
-					methodParams[i - 1] = methodSplit[i];
+					System::Type^ paramType = methodSplit[i]->GetType();
+					System::ComponentModel::TypeConverter^ converter = System::ComponentModel::TypeDescriptor::GetConverter(paramType);
+					methodParams[i - 1] = converter->ConvertFromString(methodSplit[i]);
 					methodParamTypes[i - 1] = methodSplit[i]->GetType();
 				}
 			}
