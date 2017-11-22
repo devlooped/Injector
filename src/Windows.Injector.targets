@@ -9,7 +9,7 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup
+	<ItemGroup>
 		<Reference Include="bootstrap" Condition="Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll')">
 			<HintPath>Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll</HintPath>
 		</Reference>
