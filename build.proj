@@ -45,7 +45,7 @@
 	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
 		<PropertyGroup>
 			<PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
-			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch)+git.$(GitCommit)</PackageVersion>
+			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch.PadLeft('3', '0'))+git.$(GitCommit)</PackageVersion>
 			<PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)Readme.md'))
 
 Built from $(PackageProjectUrl)/commit/$(GitCommit)
