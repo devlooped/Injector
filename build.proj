@@ -1,61 +1,63 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="build\corebuild.props" />
 
-	<ItemGroup>
-		<!-- MSBuild /t:Restore will restore these packages -->
-		<PackageReference Include="NuGet.Build.Packaging" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="GitInfo" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
+  <ItemGroup>
+    <!-- MSBuild /t:Restore will restore these packages -->
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev*" PrivateAssets="all" />
+    <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
+    <PackageReference Include="Sleet.Azure" Version="0.2.5" PrivateAssets="all" />
+  </ItemGroup>
 
-	<PropertyGroup>
-		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-		<IsPackagingProject>true</IsPackagingProject>
-		<InferPackageContents>false</InferPackageContents>
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <IsPackagingProject>true</IsPackagingProject>
+    <InferPackageContents>false</InferPackageContents>
 
-		<PackageId>Xamarin.Windows.Injector</PackageId>
-		<Authors>Cory Plotts</Authors>
-		<Description>Allows injecting .NET code into a remote process on Windows</Description>
-		<PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
-		<PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
-		<PackageIconUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/Icon.png</PackageIconUrl>
+    <PackageId>Xamarin.Windows.Injector</PackageId>
+    <Authors>Cory Plotts</Authors>
+    <Description>Allows injecting .NET code into a remote process on Windows</Description>
+    <PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/Icon.png</PackageIconUrl>
 
-		<Out Condition="'$(Out)' == ''">out</Out>
-		<PackageOutputPath>$(Out)</PackageOutputPath>
-	</PropertyGroup>
+    <Out Condition="'$(Out)' == ''">out</Out>
+    <PackageOutputPath>$(Out)</PackageOutputPath>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageFile Include="src\Windows.Injector.props" PackagePath="build\Xamarin.Windows.Injector.props" />
-		<PackageFile Include="src\Windows.Injector.targets" PackagePath="build\Xamarin.Windows.Injector.targets" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageFile Include="src\Windows.Injector.props" PackagePath="build\Xamarin.Windows.Injector.props" />
+    <PackageFile Include="src\Windows.Injector.targets" PackagePath="build\Xamarin.Windows.Injector.targets" />
+  </ItemGroup>
 
-	<Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
-		<MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)" />
-		<ItemGroup>
-			<_Tools Include="src\Injector\bin\*\$(Configuration)\*.*" />
-			<_Tools>
-				<!-- Convert to tools\[platform]\[filename][extension] -->
-				<PackagePath>tools\$([MSBuild]::ValueOrDefault('%(RecursiveDir)', '').Replace('$(Configuration)\', ''))%(Filename)%(Extension)</PackagePath>
-			</_Tools>
-			<PackageFile Include="@(_Tools)" />
-		</ItemGroup>
-		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-	</Target>
+  <ItemGroup>
+    <Package Include="$(PackageOutputPath)\*.nupkg" />
+  </ItemGroup>
 
-	<Target Name="GitVersion" />
-	<Import Project="build\corebuild.targets" />
+  <Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
+    <MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)" />
+    <ItemGroup>
+      <_Tools Include="src\Injector\bin\*\$(Configuration)\*.*" />
+      <_Tools>
+        <!-- Convert to tools\[platform]\[filename][extension] -->
+        <PackagePath>tools\$([MSBuild]::ValueOrDefault('%(RecursiveDir)', '').Replace('$(Configuration)\', ''))%(Filename)%(Extension)</PackagePath>
+      </_Tools>
+      <PackageFile Include="@(_Tools)" />
+    </ItemGroup>
+    <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+  </Target>
 
-	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
-		<PropertyGroup>
-			<PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
-			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch.PadLeft('3', '0'))+git.$(GitCommit)</PackageVersion>
-			<PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)Readme.md'))
+  <Target Name="GitVersion" />
+  <Import Project="build\corebuild.targets" />
 
-Built from $(PackageProjectUrl)/commit/$(GitCommit)
-			</PackageReleaseNotes>
-		</PropertyGroup>
-	</Target>
+  <Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
+    <PropertyGroup>
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch.PadLeft('3', '0'))+git.$(GitCommit)</PackageVersion>
+      <PackageReleaseNotes>
+        $([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)Readme.md'))
+
+        Built from $(PackageProjectUrl)/commit/$(GitCommit)
+      </PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
 </Project>
