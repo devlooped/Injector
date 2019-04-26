@@ -11,6 +11,9 @@
     <AssetTargetFallback>netcoreapp2.0</AssetTargetFallback>
     <TargetFramework>net45</TargetFramework>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+
+    <PackOnBuild>true</PackOnBuild>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
     <IsPackagingProject>true</IsPackagingProject>
     <InferPackageContents>true</InferPackageContents>
 
@@ -27,11 +30,13 @@
 
   <ItemGroup>
     <Package Include="$(PackageOutputPath)\*.nupkg" />
-    <ProjectReference Include="src\Injector\Injector.csproj" />
   </ItemGroup>
 
-  <Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
+  <Target Name="PackTools" BeforeTargets="GetPackageContents">
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+    <MSBuild Projects="src\Injector\Injector.csproj" Targets="GetPackageContents" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="PackageFile" />
+    </MSBuild>
   </Target>
 
   <Target Name="GitVersion" />
