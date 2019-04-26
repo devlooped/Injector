@@ -1,12 +1,10 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="build\corebuild.props" />
+<Project Sdk="CoreBuild/1.0.0-beta" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
     <!-- MSBuild /t:Restore will restore these packages -->
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev*" PrivateAssets="all" />
     <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
     <PackageReference Include="Sleet.Azure" Version="0.2.5" PrivateAssets="all" />
-    <PackageReference Include="Sleet" Version="2.3.79" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -48,7 +46,6 @@
   </Target>
 
   <Target Name="GitVersion" />
-  <Import Project="build\corebuild.targets" />
 
   <Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
     <PropertyGroup>
@@ -61,4 +58,5 @@
       </PackageReleaseNotes>
     </PropertyGroup>
   </Target>
+
 </Project>
