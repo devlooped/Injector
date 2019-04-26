@@ -1,4 +1,4 @@
-<Project Sdk="CoreBuild/1.0.0-beta" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.Build.NoTargets/1.0.53" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
     <!-- MSBuild /t:Restore will restore these packages -->
@@ -8,9 +8,11 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <AssetTargetFallback>netcoreapp2.0</AssetTargetFallback>
+    <TargetFramework>net45</TargetFramework>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <IsPackagingProject>true</IsPackagingProject>
-    <InferPackageContents>false</InferPackageContents>
+    <InferPackageContents>true</InferPackageContents>
 
     <PackageId>Xamarin.Windows.Injector</PackageId>
     <Authors>Cory Plotts</Authors>
@@ -24,24 +26,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageFile Include="src\Windows.Injector.props" PackagePath="build\Xamarin.Windows.Injector.props" />
-    <PackageFile Include="src\Windows.Injector.targets" PackagePath="build\Xamarin.Windows.Injector.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Package Include="$(PackageOutputPath)\*.nupkg" />
+    <ProjectReference Include="src\Injector\Injector.csproj" />
   </ItemGroup>
 
   <Target Name="Build" DependsOnTargets="GetPackageTargetPath" BeforeTargets="GetPackageContents">
-    <MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)" />
-    <ItemGroup>
-      <_Tools Include="src\Injector\bin\*\$(Configuration)\*.*" />
-      <_Tools>
-        <!-- Convert to tools\[platform]\[filename][extension] -->
-        <PackagePath>tools\$([MSBuild]::ValueOrDefault('%(RecursiveDir)', '').Replace('$(Configuration)\', ''))%(Filename)%(Extension)</PackagePath>
-      </_Tools>
-      <PackageFile Include="@(_Tools)" />
-    </ItemGroup>
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
   </Target>
 
