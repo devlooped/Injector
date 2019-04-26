@@ -1,0 +1,11 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="AssignToolsPackagePath" AfterTargets="InferPackageContents">
+    <ItemGroup>
+      <PackageFile Condition="'%(Kind)' == 'tools'">
+        <PackagePath>tools\$(PlatformTarget)\%(Filename)%(Extension)</PackagePath>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
+
+</Project>

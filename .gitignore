@@ -1,9 +1,11 @@
 bin
 obj
 out
+.nuget
+.vs
+packages
 *.VC.db
 *.opendb
 *.user
 *.suo
 *.cache
-build/.nuget

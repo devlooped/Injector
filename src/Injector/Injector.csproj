@@ -1,68 +1,44 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{87A8FBB3-AC9F-4765-9A0E-B098D43A2DE9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Injector</RootNamespace>
-    <AssemblyName>Injector</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <!-- We fake multi-targeting for platforms by arbitrarily picking multiple target frameworks -->
+    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <Platforms>x86;x64</Platforms>
+    <BootstrapPlatform>Win32</BootstrapPlatform>
+    <PrimaryOutputKind>tools</PrimaryOutputKind>
+    <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <Platform>x86</Platform>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
-    <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
+    <Platform>x64</Platform>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <BootstrapPlatform>x64</BootstrapPlatform>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <None Include="..\Xamarin.Windows.Injector.props" Link="Xamarin.Windows.Injector.props" Pack="true" Kind="Build" />
+    <None Include="..\Xamarin.Windows.Injector.targets" Link="Xamarin.Windows.Injector.targets" Pack="true" Kind="Build" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev*" PrivateAssets="all" />
+    <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="Injector.CrossTargetting.targets">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Injector.targets" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj">
       <Project>{8072b47b-5611-4bab-8ef4-cb3125d676a5}</Project>
-      <AdditionalProperties>VisualStudioVersion=$(VisualStudioVersion);Configuration=$(Configuration);Platform=$(Platform)</AdditionalProperties>
+      <AdditionalProperties>VisualStudioVersion=$(VisualStudioVersion);Configuration=$(Configuration);Platform=$(BootstrapPlatform)</AdditionalProperties>
       <Name>Bootstrap</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="Injector.targets" />
+
 </Project>

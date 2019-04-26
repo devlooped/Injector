@@ -3,7 +3,7 @@
 namespace Injector
 {
 	/// <summary>
-	/// Helper process for Xamarin.Inspector.VS.InspectorPackage to inject Inspector support
+	/// Helper process to allow injection into processes that have different bitness 
 	/// into WPF app processes.
 	///
 	/// VS is 32-bit, so it cannot write to the memory of a 64-bit process, and delegates
