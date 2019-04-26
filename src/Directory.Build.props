@@ -3,6 +3,7 @@
   <PropertyGroup>
     <IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
     <InferLegacyPackageReferences>false</InferLegacyPackageReferences>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
 </Project>
