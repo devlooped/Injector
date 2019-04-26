@@ -16,7 +16,7 @@ namespace Bootstrap
 	{
 		public:
 
-		static void Launch(System::IntPtr windowHandle, System::String^ assemblyName, System::String^ className, System::String^ methodName);
+		static void Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName);
 
 		static void LogMessage(System::String^ message, bool append);
 	};

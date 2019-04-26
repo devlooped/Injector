@@ -16,9 +16,9 @@ static HHOOK _messageHookHandle;
 //-----------------------------------------------------------------------------
 //Spying Process functions follow
 //-----------------------------------------------------------------------------
-void Injector::Launch(System::IntPtr windowHandle, System::String^ assembly, System::String^ className, System::String^ methodName)
+void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName)
 {
-	System::String^ assemblyClassAndMethod = assembly + "$" + className + "$" + methodName;
+	System::String^ assemblyClassAndMethod = assemblyFile + "$" + typeFullName + "$" + methodName;
 	pin_ptr<const wchar_t> acmLocal = PtrToStringChars(assemblyClassAndMethod);
 
 	HINSTANCE hinstDLL;	
@@ -105,19 +105,6 @@ LRESULT __stdcall MessageHookProc(int nCode, WPARAM wparam, LPARAM lparam)
 			cli::array<System::String^>^ acmSplit = acmLocal->Split('$');
 			cli::array<System::String^>^ methodSplit = acmSplit[2]->Split(':');
 
-			cli::array<System::Object^>^ methodParams = nullptr;
-			cli::array<System::Type^>^ methodParamTypes = gcnew cli::array<System::Type^>(0);
-			if (methodSplit->Length > 1) {
-				methodParams = gcnew cli::array<System::Object^>(methodSplit->Length - 1);
-				methodParamTypes = gcnew cli::array<System::Type^>(methodSplit->Length - 1);
-				for (int i = 1; i < methodSplit->Length; i++) {
-					System::Type^ paramType = methodSplit[i]->GetType();
-					System::ComponentModel::TypeConverter^ converter = System::ComponentModel::TypeDescriptor::GetConverter(paramType);
-					methodParams[i - 1] = converter->ConvertFromString(methodSplit[i]);
-					methodParamTypes[i - 1] = methodSplit[i]->GetType();
-				}
-			}
-
 			Injector::LogMessage(String::Format("About to load assembly {0}", acmSplit[0]), true);
 			System::Reflection::Assembly^ assembly = System::Reflection::Assembly::LoadFrom(acmSplit[0]);
 			if (assembly != nullptr)
@@ -127,19 +114,52 @@ LRESULT __stdcall MessageHookProc(int nCode, WPARAM wparam, LPARAM lparam)
 				if (type != nullptr)
 				{
 					Injector::LogMessage(String::Format("Just loaded the type {0}", acmSplit[1]), true);
-					Injector::LogMessage(String::Format("Looking for full method {0}", acmSplit[2]), true);
-					Injector::LogMessage(String::Format("Looking for method {0}", methodSplit[0]), true);
+					// Injector::LogMessage(String::Format("Looking for full method and parameters {0}", acmSplit[2]), true);
+					Injector::LogMessage(String::Format("Looking for method named {0}", methodSplit[0]), true);
+
 					System::Reflection::MethodInfo^ methodInfo = type->GetMethod(
 						methodSplit[0],
-						System::Reflection::BindingFlags::Static | System::Reflection::BindingFlags::Public,
-						nullptr,
-						methodParamTypes,
-						nullptr);
+						System::Reflection::BindingFlags::Static | System::Reflection::BindingFlags::Public);
+
 					if (methodInfo != nullptr)
 					{
-						Injector::LogMessage(System::String::Format("About to invoke {0} on type {1}", methodInfo->Name, acmSplit[1]), true);
-						methodInfo->Invoke(nullptr, methodParams);
+                        if (methodSplit->Length > 1)
+                        {
+                            cli::array<System::Reflection::ParameterInfo^>^ parameters = methodInfo->GetParameters();
+                            if (methodSplit->Length - 1 != parameters->Length)
+                            {
+                                Injector::LogMessage(System::String::Format("Did not receive the expected {0} parameters to invoke {1}.{2}", parameters->Length, acmSplit[1], methodSplit[0]), true);
+                            }
+                            else
+                            {
+                                Injector::LogMessage(System::String::Format("Converting {0} received method arguments", methodSplit->Length - 1), true);
+                                cli::array<System::Object^>^ methodParams = nullptr;
+
+                                methodParams = gcnew cli::array<System::Object^>(parameters->Length);
+                                for (int i = 0; i < parameters->Length; i++) {
+                                    System::Type^ paramType = parameters[i]->ParameterType;
+                                    System::ComponentModel::TypeConverter^ converter = System::ComponentModel::TypeDescriptor::GetConverter(paramType);
+                                    // NOTE: take into account that the first part of the methodSplit is the method name.
+                                    methodParams[i] = converter->ConvertFromString(methodSplit[i + 1]);
+                                }
+
+                                Injector::LogMessage(System::String::Format("Invoking {0}.{1}({2})",
+                                    acmSplit[1],
+                                    methodInfo->Name,
+                                    System::String::Join(", ", methodSplit, 1, methodSplit->Length - 1)), true);
+                                methodInfo->Invoke(nullptr, methodParams);
+                            }
+                        }
+                        else
+                        {
+                            Injector::LogMessage(System::String::Format("Invoking {0}.{1}()", acmSplit[1], methodInfo->Name), true);
+                            methodInfo->Invoke(nullptr, nullptr);
+                        }
 					}
+                    else
+                    {
+                        Injector::LogMessage(System::String::Format("Did not find method named {0} on type {1}", methodSplit[0], acmSplit[1]), true);
+                    }
 				}
 			}
 		}
