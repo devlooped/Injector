@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sample": {
+      "commandName": "Project",
+      "commandLineArgs": "\"$(VsInstallRoot)\\Common7\\IDE\\devenv.exe\""
+    }
+  }
+}
