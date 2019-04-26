@@ -7,16 +7,26 @@ Heavily based on [Cory Plott](http://www.cplotts.com)'s [Snoop](https://github.c
 Usage:
 
 * Install:
+
 ```
-install-package Windows.Injector
+install-package Xamarin.Windows.Injector
 ```
+
+The following properties are used to determine which version (`x86` or `x64`) of the `boostrap.dll` 
+assembly will be referenced: `PlatformTarget`, `Platform` and `RuntimeIdentifier`. If any of those 
+specify either `x86` or `x64`, the assembly will be automatically referenced. Note that you cannot 
+invoke the injector via its API from an `AnyCPU` library, since it has to be of a specific bitness.
+
+The targets automatically include as content both the assembly as well as a helper `Injector.exe` 
+executable which you can use to inject into processes that have a different bitness than the calling one.
 
 * Launch:
 
-```csharp
+```
 var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+
 Injector.Launch(
-    // IntPtr of the main window handle of the project to inject
+    // IntPtr of the main window handle of the process to inject
     targetProcess.MainWindowHandle,
     // The full path to the .NET assembly to load in the remote process
     Assembly.GetExecutingAssembly().Location,
@@ -25,3 +35,22 @@ Injector.Launch(
     // Name of the static method in that class to invoke in the remote process
     "Start");
 ```
+
+Optionally, the injected method call can also receive parameters, in a `{method}:arg1:arg2:argN` format:
+
+```
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+
+Injector.Launch(
+    // IntPtr of the main window handle of the process to inject
+    targetProcess.MainWindowHandle,
+    // The full path to the .NET assembly to load in the remote process
+    Assembly.GetExecutingAssembly().Location,
+    // Full type name of the public static class to invoke in the remote process
+    "MyApp.Startup",
+    // Name of the static method in that class to invoke in the remote process
+    "Start:hello:42:true");
+```
+
+> NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
+parameter type.
