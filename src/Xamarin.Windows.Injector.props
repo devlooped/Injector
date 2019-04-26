@@ -2,7 +2,7 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<WindowsInjectorToolsPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\tools'))</WindowsInjectorToolsPath>
+		<WindowsInjectorToolsPath Condition="'$(WindowsInjectorToolsPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\tools'))</WindowsInjectorToolsPath>
 		<IncludeWindowsInjectorContent Condition="'$(IncludeWindowsInjectorContent)' == ''">true</IncludeWindowsInjectorContent>
 	</PropertyGroup>
 
