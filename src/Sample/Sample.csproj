@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\Xamarin.Windows.Injector.props" />
+  <!--<Import Project="..\Xamarin.Windows.Injector.props" />-->
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -16,11 +16,10 @@
     <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj">
       <AdditionalProperties>Platform=Win32</AdditionalProperties>
     </ProjectReference>
-    <!--<ProjectReference Include="..\Injector\Injector.csproj">
-      <AdditionalProperties>Platform=$(Platform);TargetFramework=net45</AdditionalProperties>
-    </ProjectReference>-->
   </ItemGroup>
 
-  <Import Project="..\Xamarin.Windows.Injector.targets" />
+  <Target Name="GetPackageContents" />
+
+  <!--<Import Project="..\Xamarin.Windows.Injector.targets" />-->
 
 </Project>
