@@ -32,6 +32,10 @@
     <Package Include="$(PackageOutputPath)\*.nupkg" />
   </ItemGroup>
 
+  <Target Name="PrepareInjector" BeforeTargets="PrepareForBuild">
+    <MSBuild Projects="src\Injector\Injector.csproj" Properties="Configuration=$(Configuration)" />
+  </Target>
+
   <Target Name="PackTools" BeforeTargets="GetPackageContents">
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
     <MSBuild Projects="src\Injector\Injector.csproj" Targets="GetPackageContents" Properties="Configuration=$(Configuration)">

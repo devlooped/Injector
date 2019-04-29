@@ -10,6 +10,21 @@
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!--<PackOnBuild>true</PackOnBuild>-->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+
+    <PackageId>Xamarin.Windows.Injector</PackageId>
+    <Authors>Cory Plotts</Authors>
+    <Description>Allows injecting .NET code into a remote process on Windows</Description>
+    <PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/Icon.png</PackageIconUrl>
+
+    <Out Condition="'$(Out)' == ''">out</Out>
+    <PackageOutputPath>$(Out)</PackageOutputPath>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <Platform>x86</Platform>
     <PlatformTarget>x86</PlatformTarget>
@@ -34,11 +49,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj">
+    <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj" Pack="true">
       <Project>{8072b47b-5611-4bab-8ef4-cb3125d676a5}</Project>
       <AdditionalProperties>VisualStudioVersion=$(VisualStudioVersion);Configuration=$(Configuration);Platform=$(BootstrapPlatform)</AdditionalProperties>
       <Name>Bootstrap</Name>
     </ProjectReference>
   </ItemGroup>
+
+  <Target Name="Pack" DependsOnTargets="GetPackageTargetPath;GetPackageContents" Returns="@(PackageTargetPath)">
+    <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
+    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
+      <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
+      <Output TaskParameter="OutputPackage" ItemName="FileWrites" />
+    </CreatePackage>
+
+    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
+  </Target>
+
+  <Target Name="GetPackageTargetPath" Returns="@(PackageTargetPath)">
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GetPackageTargetPath" Properties="TargetFramework=net45">
+      <Output ItemName="PackageTargetPath" TaskParameter="TargetOutputs" />
+    </MSBuild>
+  </Target>
+
+  <UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="$(NuGetPackageRoot)\nuget.build.packaging\0.2.5-dev.8\build\NuGet.Build.Packaging.Tasks.dll" />
 
 </Project>
