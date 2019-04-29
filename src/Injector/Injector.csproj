@@ -72,6 +72,6 @@
     </MSBuild>
   </Target>
 
-  <UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="$(NuGetPackageRoot)\nuget.build.packaging\0.2.5-dev.8\build\NuGet.Build.Packaging.Tasks.dll" />
+  <UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="$(NuGetPackageRoot)\nuget.build.packaging\0.2.5-dev.9\build\NuGet.Build.Packaging.Tasks.dll" />
 
 </Project>
