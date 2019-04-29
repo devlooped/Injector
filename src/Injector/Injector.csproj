@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.8" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.9" PrivateAssets="all" />
     <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
   </ItemGroup>
 
