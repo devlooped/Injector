@@ -8,12 +8,38 @@
     </ItemGroup>
   </Target>
 
+  <PropertyGroup>
+    <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' != ''">$(SYSTEM_PULLREQUEST_TARGETBRANCH)</GitBranch>
+    <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
+  </PropertyGroup>
+
   <Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GitVersion">
     <PropertyGroup>
-      <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
-      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch.PadLeft('3', '0'))+git.$(GitCommit)</PackageVersion>
-      <PackageVersion Condition="'$(CI)' == 'true'">$(PackageVersion)+build.$(BUILD_BUILDID)</PackageVersion>
-      <PackageVersion Condition="$(CI) and '$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''">$(PackageVersion)+pr.$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)</PackageVersion>
+      <!-- We don't build stable versions from non-master branches. When the version came from the branch, we leave it as-is. -->
+      <GitSemVerDashLabel Condition="'$(GitBranch)' != 'master' and '$(GitSemVerDashLabel)' == '' and '$(GitSemVerSource)' != 'Branch'">-$(GitBranch)</GitSemVerDashLabel>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerDashLabel)' == '' and '$(GitCommits)' != '0'"/>
+      <!-- Branch metadata always present for non-master branches, unless the existing label matches the branch.
+           For a versioned branch, it doesn't make sense either. -->
+      <VersionMetadata Include="$(GitBranch)" Condition="'$(GitBranch)' != 'master' and '$(GitSemVerSource)' != 'Branch' and '$(GitSemVerDashLabel)' != '-$(GitBranch)'" />
+      <VersionMetadata Condition="$(CI) and '$(BUILD_REASON)' == 'PullRequest'"
+                       Include="pr.$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)"/>
+      <VersionMetadata Include="sha.$(GitCommit)" Condition="'$(GitCommit)' != ''"/>
+      <VersionMetadata Condition="$(CI)"
+                       Include="build.$(BUILD_BUILDID)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <VersionMetadataLabel>@(VersionMetadata -> '%(Identity)', '-')</VersionMetadataLabel>
+      <VersionMetadataPlusLabel Condition="'$(VersionMetadataLabel)' != ''">+$(VersionMetadataLabel)</VersionMetadataPlusLabel>
+      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != '' and '$(GitCommits)' != '0'">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
+
+      <BuildVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)$(VersionMetadataPlusLabel)</BuildVersion>
+
+      <PackageVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)$(VersionMetadataPlusLabel)</PackageVersion>
+      <Version>$(BuildVersion)</Version>
 
       <PackageReleaseNotes>
         $([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\Readme.md'))
@@ -21,7 +47,7 @@
         Built from $(PackageProjectUrl)/commit/$(GitCommit)
       </PackageReleaseNotes>
     </PropertyGroup>
-    <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(PackageVersion)"/>
+    <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(BuildVersion)"/>
   </Target>
 
 </Project>
