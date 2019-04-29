@@ -12,6 +12,9 @@
     <PropertyGroup>
       <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
       <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitSemVerPatch.PadLeft('3', '0'))+git.$(GitCommit)</PackageVersion>
+      <PackageVersion Condition="'$(CI)' == 'true'">$(PackageVersion)+build.$(BUILD_BUILDID)</PackageVersion>
+      <PackageVersion Condition="$(CI) and '$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''">$(PackageVersion)+pr.$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)</PackageVersion>
+
       <PackageReleaseNotes>
         $([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\Readme.md'))
 
