@@ -18,6 +18,7 @@
         Built from $(PackageProjectUrl)/commit/$(GitCommit)
       </PackageReleaseNotes>
     </PropertyGroup>
+    <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(BuildVersion)"/>
   </Target>
 
 </Project>
