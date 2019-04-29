@@ -13,7 +13,7 @@
     <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
   </PropertyGroup>
 
-  <Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GitVersion">
+  <Target Name="SetPackageVersion" BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageVersion;Pack" DependsOnTargets="GitVersion">
     <PropertyGroup>
       <!-- We don't build stable versions from non-master branches. When the version came from the branch, we leave it as-is. -->
       <GitSemVerDashLabel Condition="'$(GitBranch)' != 'master' and '$(GitSemVerDashLabel)' == '' and '$(GitSemVerSource)' != 'Branch'">-$(GitBranch)</GitSemVerDashLabel>
