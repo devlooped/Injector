@@ -9,15 +9,15 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="bootstrap" Condition="'$(PlatformTarget)' != '' And Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll')">
-			<HintPath>$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll</HintPath>
-		</Reference>
-    <Reference Include="bootstrap" Condition="'$(Platform)' != '' And Exists('$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.dll')">
-      <HintPath>$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.dll</HintPath>
-    </Reference>
-    <Reference Include="bootstrap" Condition="'$(RuntimeIdentifier)' != '' And Exists('$(WindowsInjectorToolsPath)\$(RuntimeIdentifier)\bootstrap.dll')">
-      <HintPath>$(WindowsInjectorToolsPath)\$(RuntimeIdentifier)\bootstrap.dll</HintPath>
+  <PropertyGroup>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(PlatformTarget)' != '' And Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll')">$(PlatformTarget)</BootstrapPlatform>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(Platform)' != '' And Exists('$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.dll')">$(Platform)</BootstrapPlatform>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(RuntimeIdentifier)' != '' And Exists('$(WindowsInjectorToolsPath)\$(RuntimeIdentifier)\bootstrap.dll')">$(RuntimeIdentifier)</BootstrapPlatform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="bootstrap" Condition="'$(BootstrapPlatform)' != ''">
+      <HintPath>$(WindowsInjectorToolsPath)\$(BootstrapPlatform)\bootstrap.dll</HintPath>
     </Reference>
   </ItemGroup>
 
