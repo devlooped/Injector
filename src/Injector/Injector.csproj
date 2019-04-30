@@ -8,10 +8,10 @@
     <BootstrapPlatform>Win32</BootstrapPlatform>
     <PrimaryOutputKind>tools</PrimaryOutputKind>
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
+    <OutputPath>bin\$(Platform)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <!--<PackOnBuild>true</PackOnBuild>-->
     <GenerateDependencyFile>false</GenerateDependencyFile>
 
     <PackageId>Xamarin.Windows.Injector</PackageId>

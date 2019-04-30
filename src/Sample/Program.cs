@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Sample
@@ -23,8 +25,12 @@ namespace Sample
 
             // Inspect %LocalAppData%\Windows.Injector\log.txt to troubleshoot
 
-            // Injection based on running the external process.
-            Process.Start("Injector.exe", 
+            // Dynamic injection based on the target process bitness
+            // using the external helper process.
+            NativeMethods.IsWow64Process(process.Handle, out var isWow);
+            var platform = isWow ? "x86" : "x64";
+
+            Process.Start(Path.Combine("Injector", platform, "Injector.exe"), 
                 process.MainWindowHandle + " " +
                 Assembly.GetExecutingAssembly().Location + " " +
                 typeof(Startup).FullName + " " +
@@ -52,5 +58,12 @@ namespace Sample
             if (debug)
                 Debugger.Launch();
         }
+    }
+
+    internal static class NativeMethods
+    {
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);
     }
 }
