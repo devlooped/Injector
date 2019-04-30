@@ -59,14 +59,21 @@ void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile,
 
 				::CloseHandle(hProcess);
 			}
-		}
+		} 
+        else
+        {
+            if (windowHandle == IntPtr::Zero)
+                LogMessage("Invalid window handle received", true);
+            else
+                LogMessage("Could not get process from window handle " + windowHandle.ToString(), true);
+        }
 		::FreeLibrary(hinstDLL);
 	}
 }
 
-void Injector::LogMessage(System::String^ message, bool append)
+void Injector::LogMessage(String^ message, bool append)
 {
-	System::String ^ applicationDataPath = Environment::GetFolderPath(Environment::SpecialFolder::LocalApplicationData);
+	String^ applicationDataPath = Environment::GetFolderPath(Environment::SpecialFolder::LocalApplicationData);
 	applicationDataPath += "\\Windows.Injector";
 
 	if (!System::IO::Directory::Exists(applicationDataPath))
@@ -74,7 +81,7 @@ void Injector::LogMessage(System::String^ message, bool append)
 		System::IO::Directory::CreateDirectory(applicationDataPath);
 	}
 
-	System::String ^ pathname = applicationDataPath + "\\log.txt";
+	String ^ pathname = applicationDataPath + "\\log.txt";
 
 	if (!append)
 	{

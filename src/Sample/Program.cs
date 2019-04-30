@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace Sample
 {
@@ -12,15 +13,28 @@ namespace Sample
             var exe = args.FirstOrDefault() ?? @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe";
 
             var process = Process.Start(exe);
-
             process.WaitForInputIdle();
+            // NOTE: it's important to wait until the window handle is actually created. 
+            // this may take a while if the startup of the target app is lenghty
+            while (process.MainWindowHandle == IntPtr.Zero)
+            {
+                Thread.Sleep(200);
+            }
 
             // Inspect %LocalAppData%\Windows.Injector\log.txt to troubleshoot
 
+            // Injection based on running the external process.
+            Process.Start("Injector.exe", 
+                process.MainWindowHandle + " " +
+                Assembly.GetExecutingAssembly().Location + " " +
+                typeof(Startup).FullName + " " +
+                $"{nameof(Startup.Start)}:hello:42:true");
+
+            // API-based injection if target process has same bitness as ours
             Bootstrap.Injector.Launch(
-                process.MainWindowHandle, 
-                Assembly.GetExecutingAssembly().Location, 
-                typeof(Startup).FullName, 
+                process.MainWindowHandle,
+                Assembly.GetExecutingAssembly().Location,
+                typeof(Startup).FullName,
                 $"{nameof(Startup.Start)}:hello:42:true");
 
             Console.ReadLine();

@@ -16,6 +16,11 @@
     <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj">
       <AdditionalProperties>Platform=Win32</AdditionalProperties>
     </ProjectReference>
+    <ProjectReference Include="..\Injector\Injector.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="GetPackageContents" />
