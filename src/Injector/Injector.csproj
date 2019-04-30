@@ -16,6 +16,8 @@
 
     <PackageId>Xamarin.Windows.Injector</PackageId>
     <Authors>Microsoft</Authors>
+    <Owners>microsoft xamarin</Owners>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
     <Description>Allows injecting .NET code into a remote process on Windows</Description>
     <PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
