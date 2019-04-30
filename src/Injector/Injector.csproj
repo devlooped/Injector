@@ -15,7 +15,7 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
 
     <PackageId>Xamarin.Windows.Injector</PackageId>
-    <Authors>Cory Plotts, Daniel Cazzulino</Authors>
+    <Authors>Microsoft</Authors>
     <Description>Allows injecting .NET code into a remote process on Windows</Description>
     <PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
