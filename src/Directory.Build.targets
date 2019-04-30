@@ -15,8 +15,10 @@
 
   <Target Name="SetPackageVersion" BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageVersion;Pack" DependsOnTargets="GitVersion">
     <PropertyGroup>
+      <IsRelease>false</IsRelease>
+      <IsRelease Condition="'$(GitSemVerSource)' == 'Branch' or '$(GitSemVerSource)' == 'Tag'">true</IsRelease>
       <!-- We don't build stable versions from non-master branches. When the version came from the branch, we leave it as-is. -->
-      <GitSemVerDashLabel Condition="'$(GitBranch)' != 'master' and '$(GitSemVerDashLabel)' == '' and '$(GitSemVerSource)' != 'Branch'">-$(GitBranch)</GitSemVerDashLabel>
+      <GitSemVerDashLabel Condition="'$(GitBranch)' != 'master' and '$(GitSemVerDashLabel)' == '' and !$(IsRelease)">-$(GitBranch)</GitSemVerDashLabel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,7 +36,7 @@
     <PropertyGroup>
       <VersionMetadataLabel>@(VersionMetadata -> '%(Identity)', '-')</VersionMetadataLabel>
       <VersionMetadataPlusLabel Condition="'$(VersionMetadataLabel)' != ''">+$(VersionMetadataLabel)</VersionMetadataPlusLabel>
-      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != '' and '$(GitCommits)' != '0'">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
+      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != '' and !$(IsRelease) and '$(GitCommits)' != '0'">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
 
       <BuildVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)$(VersionMetadataPlusLabel)</BuildVersion>
 
