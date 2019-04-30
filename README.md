@@ -52,7 +52,7 @@ Injector.Launch(
     "Start:hello:42:true");
 ```
 
-See [Program.cs](blob/master/src/Sample/Program.cs) for complete example.
+See [Program.cs](src/Sample/Program.cs) for complete example.
 
 When referencing the package from an `AnyCPU` project, the `x86` and `x64` folders will be included as 
 content and copied to the project output path. This allows you to run the relevant `Injector.exe` for 
