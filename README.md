@@ -52,5 +52,12 @@ Injector.Launch(
     "Start:hello:42:true");
 ```
 
+See [Program.cs](blob/master/src/Sample/Program.cs) for complete example.
+
+When referencing the package from an `AnyCPU` project, the `x86` and `x64` folders will be included as 
+content and copied to the project output path. This allows you to run the relevant `Injector.exe` for 
+that matches the target process bitness. This executable receives the same parameters as the `Launch` 
+method shown above.
+
 > NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
 parameter type.
