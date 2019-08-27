@@ -1,5 +1,9 @@
 # Windows.Injector
 
+[![Version](https://img.shields.io/nuget/vpre/Xamarin.Windows.Injector.svg)](https://www.nuget.org/packages/Xamarin.Windows.Injector)
+[![Downloads](https://img.shields.io/nuget/dt/Xamarin.Windows.Injector)](https://www.nuget.org/packages/Xamarin.Windows.Injector)
+[![Build Status](https://dev.azure.com/devdiv/DevDiv/_apis/build/status/Xamarin/VisualStudio/Windows.Injector?branchName=master)](http://build.azdo.io/11357)
+
 Allows injecting .NET code into a remote process on Windows
 
 Heavily based on [Cory Plott](http://www.cplotts.com)'s [Snoop](https://github.com/cplotts/snoopwpf).
