@@ -18,6 +18,7 @@
   <ItemGroup>
     <Reference Include="bootstrap" Condition="'$(BootstrapPlatform)' != ''">
       <HintPath>$(WindowsInjectorToolsPath)\$(BootstrapPlatform)\bootstrap.dll</HintPath>
+      <NuGetPackageId>Xamarin.Windows.Injector</NuGetPackageId>
     </Reference>
   </ItemGroup>
 
