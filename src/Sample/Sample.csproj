@@ -1,28 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\Xamarin.Windows.Injector.props" />
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net472</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <WindowsInjectorToolsPath>..\Injector\bin</WindowsInjectorToolsPath>
-
+    <Platform>x86</Platform>
     <Platforms>x86;x64</Platforms>
+
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj" AdditionalProperties="Platform=Win32" />
-    <ProjectReference Include="..\Injector\Injector.csproj" ReferenceOutputAssembly="false" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
+    <ProjectProperty Include="VsInstallRoot" />
   </ItemGroup>
 
-  <Target Name="GetPackageContents" />
+  <ItemGroup>
+    <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj" />
+  </ItemGroup>
 
-  <Import Project="..\Xamarin.Windows.Injector.targets" />
+  <!-- When importing the nuget package, this happens automatically -->
+  <ItemGroup>
+    <Content Include="$(WindowsInjectorToolsPath)\x86\**\*.*">
+      <Link>Injector\x86\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(WindowsInjectorToolsPath)\x64\**\*.*">
+      <Link>Injector\x86\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>  
 
 </Project>

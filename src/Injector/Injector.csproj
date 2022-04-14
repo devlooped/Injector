@@ -2,78 +2,64 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <TargetExt>.exe</TargetExt>
     <!-- We fake multi-targeting for platforms by arbitrarily picking multiple target frameworks -->
-    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <Targetframework Condition="'$(Platform)' == 'x86'">net472</Targetframework>
+    <Targetframework Condition="'$(Platform)' == 'x64'">netstandard2.0</Targetframework>
     <Platforms>x86;x64</Platforms>
     <BootstrapPlatform>Win32</BootstrapPlatform>
-    <PrimaryOutputKind>tools</PrimaryOutputKind>
-    <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
-    <OutputPath>bin\$(Platform)</OutputPath>
+    <PackFolder>tools</PackFolder>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDependencyFile>false</GenerateDependencyFile>
 
-    <PackageId>Xamarin.Windows.Injector</PackageId>
-    <Authors>Microsoft</Authors>
-    <Owners>microsoft xamarin</Owners>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <Description>Allows injecting .NET code into a remote process on Windows</Description>
-    <PackageProjectUrl>https://github.com/xamarin/Windows.Injector</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/LICENSE.txt</PackageLicenseUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/xamarin/Windows.Injector/master/Icon.png</PackageIconUrl>
-
-    <Out Condition="'$(Out)' == ''">out</Out>
-    <PackageOutputPath>$(Out)</PackageOutputPath>
+    <PackageId>Devlooped.Injector</PackageId>
+    <Description>Allows injecting .NET code into another Windows process</Description>
+    <PackageProjectUrl>https://github.com/devlooped/Injector</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
     <Platform>x86</Platform>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
+    <BootstrapPlatform>Win32</BootstrapPlatform>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <Platform>x64</Platform>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <BootstrapPlatform>x64</BootstrapPlatform>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackFolder>$(PackFolder)\$(Platform)</PackFolder>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <None Include="..\Xamarin.Windows.Injector.props" Link="Xamarin.Windows.Injector.props" Pack="true" Kind="Build" />
-    <None Include="..\Xamarin.Windows.Injector.targets" Link="Xamarin.Windows.Injector.targets" Pack="true" Kind="Build" />
+    <None Update="build\*.*" Pack="true" Kind="Build" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.9" PrivateAssets="all" />
-    <PackageReference Include="GitInfo" Version="2.0.20" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.7.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj" Pack="true">
       <Project>{8072b47b-5611-4bab-8ef4-cb3125d676a5}</Project>
-      <AdditionalProperties>VisualStudioVersion=$(VisualStudioVersion);Configuration=$(Configuration);Platform=$(BootstrapPlatform)</AdditionalProperties>
+      <AdditionalProperties>
+        VisualStudioVersion=$(VisualStudioVersion);
+        Configuration=$(Configuration);
+        Platform=$(BootstrapPlatform);
+        NuGetPackageRoot=$(NuGetPackageRoot);
+        PackFolder=$(PackFolder)
+      </AdditionalProperties>
       <Name>Bootstrap</Name>
     </ProjectReference>
   </ItemGroup>
-
-  <Target Name="Pack" DependsOnTargets="GetPackageTargetPath;GetPackageContents" Returns="@(PackageTargetPath)">
-    <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
-    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
-      <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
-      <Output TaskParameter="OutputPackage" ItemName="FileWrites" />
-    </CreatePackage>
-
-    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
-  </Target>
-
-  <Target Name="GetPackageTargetPath" Returns="@(PackageTargetPath)">
-    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GetPackageTargetPath" Properties="TargetFramework=net45">
-      <Output ItemName="PackageTargetPath" TaskParameter="TargetOutputs" />
-    </MSBuild>
-  </Target>
-
-  <UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="$(NuGetPackageRoot)\nuget.build.packaging\0.2.5-dev.9\build\NuGet.Build.Packaging.Tasks.dll" />
-
+  
 </Project>

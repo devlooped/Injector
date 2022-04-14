@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.props')" />
+  <PropertyGroup>
+    <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == ''">$(USERPROFILE)\.nuget\packages\</NuGetPackageRoot>
+  </PropertyGroup>
+  <Import Project="$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props" Condition="Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,20 +24,20 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8072B47B-5611-4BAB-8EF4-CB3125D676A5}</ProjectGuid>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <RootNamespace>Bootstrap</RootNamespace>
     <PlatformTarget Condition="'$(Platform)' == 'Win32'">x86</PlatformTarget>
     <PlatformTarget Condition="'$(Platform)' != 'Win32'">$(Platform)</PlatformTarget>
-    <PrimaryOutputKind>tools</PrimaryOutputKind>
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>Bootstrap</ProjectName>
     <TargetName>bootstrap</TargetName>
-    <LinkKeyFile>$(MSBuildProjectDirectory)\..\Windows.Injector.snk</LinkKeyFile>
+    <LinkKeyFile>$(MSBuildProjectDirectory)\..\kzu.snk</LinkKeyFile>
     <OutDir>$(MSBuildProjectDirectory)\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(MSBuildProjectDirectory)\obj\$(PlatformTarget)\$(Configuration)\</IntDir>
-    <PlatformToolset Condition="'$(PlatformToolset)' == '' And '$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
-    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <PackFolder>$(PackFolder)\$(Platform)</PackFolder>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -179,20 +182,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="System">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-    <Reference Include="System.Data">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-    <Reference Include="System.Xml">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Injector.cpp" />
     <ClCompile Include="Stdafx.cpp">
@@ -207,6 +196,10 @@
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -214,13 +207,13 @@
     <GetTargetPathDependsOn>$(GetTargetPathDependsOn);Build</GetTargetPathDependsOn>
   </PropertyGroup>
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.targets')" />
+    <Import Project="$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets" Condition="Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.props'))" />
-    <Error Condition="!Exists('..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.Build.Packaging.0.2.5-dev.9\build\NuGet.Build.Packaging.targets'))" />
+    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props'))" />
+    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets'))" />
   </Target>
 </Project>

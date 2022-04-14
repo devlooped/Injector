@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup Condition="'$(IncludeWindowsInjectorContent)' == 'true'">
+    <Content Include="$(WindowsInjectorToolsPath)\**\*.*">
+      <Link>Injector\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <Pack>true</Pack>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(PlatformTarget)' != '' And Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.$(PlatformTarget).dll')">$(PlatformTarget)</BootstrapPlatform>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(Platform)' != '' And Exists('$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.$(Platform).dll')">$(Platform)</BootstrapPlatform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="bootstrap.$(BootstrapPlatform)" Condition="'$(BootstrapPlatform)' != ''">
+      <HintPath>$(WindowsInjectorToolsPath)\$(BootstrapPlatform)\bootstrap.$(BootstrapPlatform).dll</HintPath>
+      <NuGetPackageId>Devlooped.Windows.Injector</NuGetPackageId>
+    </Reference>
+  </ItemGroup>
+
+</Project>
