@@ -17,17 +17,16 @@ Usage:
 install-package Devlooped.Injector
 ```
 
-The following properties are used to determine which version (`x86` or `x64`) of the `boostrap.dll` 
-assembly will be referenced: `PlatformTarget`, `Platform` and `RuntimeIdentifier`. If any of those 
-specify either `x86` or `x64`, the assembly will be automatically referenced. Note that you cannot 
-invoke the injector via its API from an `AnyCPU` library, since it has to be of a specific bitness.
+The `$(PlatformTarget)` or `$(Platform)` properties of the referencing project are used to determine 
+which version (`x86` or `x64`) of the `boostrap.dll` assembly will be referenced. If any of those 
+specify either `x86` or `x64`, the assembly will be automatically referenced. 
 
 The targets automatically include as content both the assembly as well as a helper `Injector.exe` 
 executable which you can use to inject into processes that have a different bitness than the calling one.
 
 * Launch:
 
-```
+```csharp
 var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
 
 Injector.Launch(
@@ -41,9 +40,44 @@ Injector.Launch(
     "Start");
 ```
 
+When referencing the package from an `AnyCPU` project, a helper `Injector.exe` 
+is provided in both `x86` and `x64` bitness versions and included in the referencing project 
+as content, copied automatically to the output under `Injector\[x86|x64]\Injector.exe`. 
+This allows you to run the relevant executable that matches the target process bitness. 
+This executable receives the same parameters as the `Launch` method shown above. 
+
+For example, to detect a target process bitness, you could use the following interop code:
+
+```csharp
+static class NativeMethods
+{
+    [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);
+}
+```
+
+And then use the following code (note it's similar to the API-based one above) to inject 
+into it:
+
+```csharp
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+
+NativeMethods.IsWow64Process(targetProcess.Handle, out var isWow);
+var platform = isWow ? "x86" : "x64";
+
+Process.Start(Path.Combine("Injector", platform, "Injector.exe"),
+    targetProcess.MainWindowHandle + " " +
+    Assembly.GetExecutingAssembly().Location + " " +
+    typeof(Startup).FullName + " " +
+    $"{nameof(Startup.Start)}:hello:42:true");
+```
+
+
+
 Optionally, the injected method call can also receive parameters, in a `{method}:arg1:arg2:argN` format:
 
-```
+```csharp
 var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
 
 Injector.Launch(
@@ -58,11 +92,6 @@ Injector.Launch(
 ```
 
 See [Program.cs](src/Sample/Program.cs) for complete example.
-
-When referencing the package from an `AnyCPU` project, the `x86` and `x64` folders will be included as 
-content and copied to the project output path. This allows you to run the relevant `Injector.exe` for 
-that matches the target process bitness. This executable receives the same parameters as the `Launch` 
-method shown above.
 
 > NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
 parameter type.
