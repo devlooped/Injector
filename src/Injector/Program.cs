@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Injector
 {
@@ -12,14 +11,28 @@ namespace Injector
     /// </summary>
     public class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            var handle = new IntPtr(int.Parse(args[0]));
-            var supportDllPath = args[1].Trim('"');
-            var className = args[2].Trim('"');
+            if (args.Length != 4)
+            {
+                Console.WriteLine("Usage: Injector.exe <mainWindowHandle> <assemblyFile> <typeName> <methodName>");
+                Console.WriteLine();
+                Console.WriteLine("Arguments:");
+                Console.WriteLine("  <processMainWindowHandle>   IntPtr of the main window handle of the process to inject, i.e. Process.MainWindowHandle.");
+                Console.WriteLine("  <assemblyFile>              The full path to the .NET assembly to load in the remote process.");
+                Console.WriteLine("  <typeName>                  Full type name of the public static class to invoke in the remote process.");
+                Console.WriteLine("  <methodName>                Name of the static method in that class to invoke in the remote process. Must be a ");
+                Console.WriteLine("                              static method, which can also receive arguments, such as 'Start:true:42'.");
+                return -1;
+            }
+
+            var mainWindow = new IntPtr(int.Parse(args[0]));
+            var assemblyFile = args[1].Trim('"');
+            var typeName = args[2].Trim('"');
             var methodName = args[3].Trim('"');
 
-            Bootstrap.Injector.Launch(handle, supportDllPath, className, methodName);
+            Bootstrap.Injector.Launch(mainWindow, assemblyFile, typeName, methodName);
+            return 0;
         }
     }
 }
