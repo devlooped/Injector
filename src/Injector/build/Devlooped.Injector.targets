@@ -7,6 +7,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <Pack>true</Pack>
+      <PackageId>Devlooped.Injector</PackageId>
     </Content>
   </ItemGroup>
 
