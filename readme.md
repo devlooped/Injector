@@ -1,8 +1,9 @@
-# Windows.Injector
+# Devlooped.Injector
 
-[![Version](https://img.shields.io/nuget/vpre/Xamarin.Windows.Injector.svg)](https://www.nuget.org/packages/Xamarin.Windows.Injector)
-[![Downloads](https://img.shields.io/nuget/dt/Xamarin.Windows.Injector.svg)](https://www.nuget.org/packages/Xamarin.Windows.Injector)
-[![Build Status](https://dev.azure.com/devdiv/DevDiv/_apis/build/status/Xamarin/VisualStudio/Windows.Injector?branchName=master)](http://build.azdo.io/11357)
+[![Version](https://img.shields.io/nuget/vpre/Devlooped.Injector.svg)](https://www.nuget.org/packages/Devlooped.Injector)
+[![Downloads](https://img.shields.io/nuget/dt/Devlooped.Injector.svg)](https://www.nuget.org/packages/Devlooped.Injector)
+[![License](https://img.shields.io/github/license/devlooped/Injector.svg?color=blue)](https://github.com//devlooped/Injector/blob/main/license.txt)
+[![Build](https://github.com/devlooped/Injector/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/Injector/actions)
 
 Allows injecting .NET code into a remote process on Windows
 
@@ -13,7 +14,7 @@ Usage:
 * Install:
 
 ```
-install-package Xamarin.Windows.Injector
+install-package Devlooped.Injector
 ```
 
 The following properties are used to determine which version (`x86` or `x64`) of the `boostrap.dll` 
