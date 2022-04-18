@@ -17,9 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="bootstrap.$(BootstrapPlatform)" Condition="'$(BootstrapPlatform)' != ''">
-      <HintPath>$(WindowsInjectorToolsPath)\$(BootstrapPlatform)\bootstrap.$(BootstrapPlatform).dll</HintPath>
-      <NuGetPackageId>Devlooped.Windows.Injector</NuGetPackageId>
+    <Reference Include="bootstrap" Condition="'$(BootstrapPlatform)' != ''">
+      <HintPath>$(WindowsInjectorToolsPath)\$(BootstrapPlatform)\bootstrap.dll</HintPath>
+      <NuGetPackageId>Devlooped.Injector</NuGetPackageId>
     </Reference>
   </ItemGroup>
 
