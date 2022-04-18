@@ -74,7 +74,7 @@ void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile,
 void Injector::LogMessage(String^ message, bool append)
 {
 	String^ applicationDataPath = Environment::GetFolderPath(Environment::SpecialFolder::LocalApplicationData);
-	applicationDataPath += "\\Windows.Injector";
+	applicationDataPath += "\\Devlooped\\Injector";
 
 	if (!System::IO::Directory::Exists(applicationDataPath))
 	{
