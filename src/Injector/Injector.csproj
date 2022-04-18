@@ -11,6 +11,7 @@
     <BootstrapPlatform>Win32</BootstrapPlatform>
     <PackFolder>tools</PackFolder>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
