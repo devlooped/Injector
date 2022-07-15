@@ -11,16 +11,20 @@ on:
       - code-of-conduct.md
       - security.md
       - support.md
+      - readme.md
   pull_request:
     types: [opened, synchronize, reopened]
 
 env:
   DOTNET_NOLOGO: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  build:
-    name: build
-    runs-on: windows-latest
+  dotnet-format:
+    runs-on: ubuntu-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -28,21 +32,54 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: ⚙ dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
       - name: ✓ ensure format
         run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
 
-      - name: ≥ msbuild
-        id: msbuild
-        uses: microsoft/setup-msbuild@v1.1
+  build:
+    name: build-${{ matrix.os }}
+    needs: dotnet-format
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macOS-latest]
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+        with: 
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: ⚙ dotnet
+        uses: actions/setup-dotnet@v1
+        if: matrix.os != 'windows-latest'
+        with:
+          dotnet-version: '6.0.x'
 
       - name: 🙏 build
-        working-directory: ./src/Injector
-        run: msbuild -r -t:"build;pack" -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER" 
+        run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
 
+      - name: ⚙ GNU grep
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew install grep
+          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
+
+      - name: 🧪 test
+        uses: ./.github/workflows/test
+
+      - name: 📦 pack
+        run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+
+      # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
-        if: env.SLEET_CONNECTION != ''
+        if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
