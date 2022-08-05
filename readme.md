@@ -95,3 +95,6 @@ See [Program.cs](src/Sample/Program.cs) for complete example.
 
 > NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
 parameter type.
+
+
+<!-- include docs/footer.md -->
