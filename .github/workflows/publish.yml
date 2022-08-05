@@ -13,7 +13,7 @@ env:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -21,25 +21,13 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
+      - name: ≥ msbuild
+        id: msbuild
+        uses: microsoft/setup-msbuild@v1.1
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:version=${GITHUB_REF#refs/*/v}
-
-      - name: ⚙ GNU grep
-        if: matrix.os == 'macOS-latest'
-        run: |
-          brew install grep
-          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
-
-      - name: 🧪 test
-        uses: ./.github/workflows/test
-
-      - name: 📦 pack
-        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v}
+        working-directory: ./src/Injector
+        run: msbuild -r -t:"build;pack" -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER" 
 
       - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: dotnet nuget push bin/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
