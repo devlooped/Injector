@@ -18,8 +18,9 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
 
     <PackageId>Devlooped.Injector</PackageId>
-    <Description>Allows injecting .NET code into another Windows process</Description>
+    <Description>Inject .NET code into any Windows</Description>
     <PackageProjectUrl>https://github.com/devlooped/Injector</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/devlooped/Injector/main/assets/img/icon.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">

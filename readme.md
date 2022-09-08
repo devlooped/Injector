@@ -1,11 +1,13 @@
-# Devlooped.Injector
+![Icon](https://raw.githubusercontent.com/devlooped/Injector/main/assets/img/icon-32.png) .NET Injector
+============
 
 [![Version](https://img.shields.io/nuget/vpre/Devlooped.Injector.svg)](https://www.nuget.org/packages/Devlooped.Injector)
 [![Downloads](https://img.shields.io/nuget/dt/Devlooped.Injector.svg)](https://www.nuget.org/packages/Devlooped.Injector)
 [![License](https://img.shields.io/github/license/devlooped/Injector.svg?color=blue)](https://github.com//devlooped/Injector/blob/main/license.txt)
 [![Build](https://github.com/devlooped/Injector/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/Injector/actions)
 
-Allows injecting .NET code into a remote process on Windows
+<!-- #content -->
+Allows injecting .NET code into any Windows process.
 
 Heavily based on [Cory Plott](http://www.cplotts.com)'s [Snoop](https://github.com/cplotts/snoopwpf).
 
@@ -22,12 +24,13 @@ which version (`x86` or `x64`) of the `boostrap.dll` assembly will be referenced
 specify either `x86` or `x64`, the assembly will be automatically referenced. 
 
 The targets automatically include as content both the assembly as well as a helper `Injector.exe` 
-executable which you can use to inject into processes that have a different bitness than the calling one.
+executable which you can use to inject into processes that have a different bitness than the calling 
+one.
 
 * Launch:
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
 
 Injector.Launch(
     // IntPtr of the main window handle of the process to inject
@@ -61,7 +64,7 @@ And then use the following code (note it's similar to the API-based one above) t
 into it:
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
 
 NativeMethods.IsWow64Process(targetProcess.Handle, out var isWow);
 var platform = isWow ? "x86" : "x64";
@@ -78,7 +81,7 @@ Process.Start(Path.Combine("Injector", platform, "Injector.exe"),
 Optionally, the injected method call can also receive parameters, in a `{method}:arg1:arg2:argN` format:
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
 
 Injector.Launch(
     // IntPtr of the main window handle of the process to inject
