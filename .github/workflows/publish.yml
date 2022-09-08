@@ -5,7 +5,7 @@
 name: publish
 on:
   release:
-    types: [released]
+    types: [published]
 
 env:
   DOTNET_NOLOGO: true
@@ -25,9 +25,22 @@ jobs:
         id: msbuild
         uses: microsoft/setup-msbuild@v1.1
 
+      - name: ✍ version
+        shell: bash
+        run: echo "Version=${GITHUB_REF#refs/*/v}" >> $env:GITHUB_ENV
+
       - name: 🙏 build
         working-directory: ./src/Injector
-        run: msbuild -r -t:"build;pack" -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER" 
+        run: msbuild -r -t:"build;pack"
 
+      - name: 🚀 sleet
+        env:
+          SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
+        if: env.SLEET_CONNECTION != ''
+        run: |
+          dotnet tool install -g --version 4.0.18 sleet 
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
+        
       - name: 🚀 nuget
+        if: github.event.release.prerelease == false
         run: dotnet nuget push bin/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
