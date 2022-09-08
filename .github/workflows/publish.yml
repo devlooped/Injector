@@ -27,7 +27,7 @@ jobs:
 
       - name: ✍ version
         shell: bash
-        run: echo "Version=${GITHUB_REF#refs/*/v}" >> $env:GITHUB_ENV
+        run: echo "Version=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
 
       - name: 🙏 build
         working-directory: ./src/Injector
