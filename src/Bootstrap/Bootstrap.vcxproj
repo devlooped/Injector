@@ -210,7 +210,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.props'))" />
-    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.7.5\build\NuGetizer.targets'))" />
+    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.9.0\build\NuGetizer.props')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.9.0\build\NuGetizer.props'))" />
+    <Error Condition="!Exists('$(NuGetPackageRoot)nugetizer\0.9.0\build\NuGetizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)nugetizer\0.9.0\build\NuGetizer.targets'))" />
   </Target>
 </Project>
