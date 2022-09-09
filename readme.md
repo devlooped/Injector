@@ -49,7 +49,7 @@ This is likely the more common scenario. You have .NET code that is AnyCPU and c
 therefore be injected regardless of the target process bitness. When referencing this 
 package, you will get two (content) folders containing a helper `Injector.exe` for each architecture:
 
-![Screenshot](https://github.com/devlooped/Injector/raw/main/assets/img/content-files.png)
+![Screenshot](https://raw.githubusercontent.com/devlooped/Injector/main/assets/img/content-files.png)
 
 These files are automatically copied to the output directory under `Injector\[x86|x64]\Injector.exe` 
 (and are also included when doing `dotnet publish`). This allows you to run the relevant executable 
