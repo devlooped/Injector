@@ -20,7 +20,6 @@
     <PackageId>Devlooped.Injector</PackageId>
     <Description>Inject .NET code into any Windows</Description>
     <PackageProjectUrl>https://github.com/devlooped/Injector</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/devlooped/Injector/main/assets/img/icon.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
