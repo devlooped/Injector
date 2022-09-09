@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Injector
+namespace Devlooped
 {
     /// <summary>
     /// Helper process to allow injection into processes that have different bitness 
@@ -31,7 +31,7 @@ namespace Injector
             var typeName = args[2].Trim('"');
             var methodName = args[3].Trim('"');
 
-            Bootstrap.Injector.Launch(mainWindow, assemblyFile, typeName, methodName);
+            Injector.Launch(mainWindow, assemblyFile, typeName, methodName);
             return 0;
         }
     }

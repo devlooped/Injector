@@ -8,7 +8,7 @@
 #include "Injector.h"
 #include <vcclr.h>
 
-using namespace Bootstrap;
+using namespace Devlooped;
 
 static unsigned int WM_GOBABYGO = ::RegisterWindowMessage(L"Injector_GOBABYGO!");
 static HHOOK _messageHookHandle;

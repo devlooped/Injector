@@ -10,7 +10,7 @@ LRESULT __stdcall MessageHookProc(int nCode, WPARAM wparam, LPARAM lparam);
 
 using namespace System;
 
-namespace Bootstrap
+namespace Devlooped
 {
 	public ref class Injector : System::Object
 	{

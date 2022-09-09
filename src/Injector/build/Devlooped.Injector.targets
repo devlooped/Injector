@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(PlatformTarget)' != '' And Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.$(PlatformTarget).dll')">$(PlatformTarget)</BootstrapPlatform>
-    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(Platform)' != '' And Exists('$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.$(Platform).dll')">$(Platform)</BootstrapPlatform>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(PlatformTarget)' != '' And Exists('$(WindowsInjectorToolsPath)\$(PlatformTarget)\bootstrap.dll')">$(PlatformTarget)</BootstrapPlatform>
+    <BootstrapPlatform Condition="'$(BootstrapPlatform)' == '' And '$(Platform)' != '' And Exists('$(WindowsInjectorToolsPath)\$(Platform)\bootstrap.dll')">$(Platform)</BootstrapPlatform>
   </PropertyGroup>
 
   <ItemGroup>

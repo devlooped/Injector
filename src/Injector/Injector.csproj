@@ -49,7 +49,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Platform)' != ''">
     <ProjectReference Include="..\Bootstrap\Bootstrap.vcxproj" Pack="true">
       <Project>{8072b47b-5611-4bab-8ef4-cb3125d676a5}</Project>
       <AdditionalProperties>
