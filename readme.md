@@ -111,13 +111,11 @@ When building platform-specific code, the project would typically have (for a co
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
 		<Platforms>x64;x86</Platforms>
 	</PropertyGroup>
-
 </Project>
 ```
 
