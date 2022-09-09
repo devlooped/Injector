@@ -81,10 +81,10 @@ static class NativeMethods
 ```
 
 And the following code would lookup the target process (in this case, we just get the first instance 
-of `notepad.exe`, as an example), and invoke the right executable:
+of `devenv.exe`, the Visual Studio main process, as an example), and invoke the right executable:
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
 
 NativeMethods.IsWow64Process(targetProcess.Handle, out var isWow);
 var platform = isWow ? "x86" : "x64";
@@ -130,7 +130,7 @@ The code will otherwise look similar to the previous case:
 
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
+var targetProcess = System.Diagnostics.Process.GetProcessesByName("devenv.exe")[0];
 
 // NOTE: target process bitness must match our own assembly architecture for 
 // this to succeed.
@@ -140,7 +140,7 @@ Devlooped.Injector.Launch(
     // The full path to the .NET assembly to load in the remote process
     Assembly.GetExecutingAssembly().Location,
     // Full type name of the public static class to invoke in the remote process
-    typeof(Startup).FullName + " " +
+    typeof(Startup).FullName,
     // Name of the static method in that class to invoke in the remote process, 
     // and any parameters.
     $"{nameof(Startup.Start)}:hello:42:true");
