@@ -1,16 +1,12 @@
 # Changelog
 
+## [v1.0.1](https://github.com/devlooped/Injector/tree/v1.0.1) (2022-09-09)
+
+[Full Changelog](https://github.com/devlooped/Injector/compare/v1.0.0...v1.0.1)
+
 ## [v1.0.0](https://github.com/devlooped/Injector/tree/v1.0.0) (2022-09-09)
 
-[Full Changelog](https://github.com/devlooped/Injector/compare/v1.0.0-rc...v1.0.0)
-
-## [v1.0.0-rc](https://github.com/devlooped/Injector/tree/v1.0.0-rc) (2022-09-09)
-
-[Full Changelog](https://github.com/devlooped/Injector/compare/v1.0.0-beta...v1.0.0-rc)
-
-## [v1.0.0-beta](https://github.com/devlooped/Injector/tree/v1.0.0-beta) (2022-09-09)
-
-[Full Changelog](https://github.com/devlooped/Injector/compare/def2f06c210ced05a2858626605e631254e74c5c...v1.0.0-beta)
+[Full Changelog](https://github.com/devlooped/Injector/compare/def2f06c210ced05a2858626605e631254e74c5c...v1.0.0)
 
 :twisted_rightwards_arrows: Merged:
 
