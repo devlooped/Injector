@@ -11,45 +11,65 @@ Allows injecting .NET code into any Windows process.
 
 Heavily based on [Cory Plott](http://www.cplotts.com)'s [Snoop](https://github.com/cplotts/snoopwpf).
 
-Usage:
-
-* Install:
-
-```
-install-package Devlooped.Injector
-```
-
-The `$(PlatformTarget)` or `$(Platform)` properties of the referencing project are used to determine 
-which version (`x86` or `x64`) of the `boostrap.dll` assembly will be referenced. If any of those 
-specify either `x86` or `x64`, the assembly will be automatically referenced. 
-
-The targets automatically include as content both the assembly as well as a helper `Injector.exe` 
-executable which you can use to inject into processes that have a different bitness than the calling 
-one.
-
-* Launch:
+The only requirement is that the injected code must be a public static method on a public static 
+class, such as:
 
 ```csharp
-var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
+namespace Sample;
 
-Injector.Launch(
-    // IntPtr of the main window handle of the process to inject
-    targetProcess.MainWindowHandle,
-    // The full path to the .NET assembly to load in the remote process
-    Assembly.GetExecutingAssembly().Location,
-    // Full type name of the public static class to invoke in the remote process
-    "MyApp.Startup",
-    // Name of the static method in that class to invoke in the remote process
-    "Start");
+public static class Startup
+{
+    public static void Start(string arg1, int arg2, bool debug)
+    {
+        if (debug)
+            Debugger.Launch();
+
+        // do stuff with arg1, arg2, etc.
+        // note args are typed :)
+    }
+}
 ```
 
-When referencing the package from an `AnyCPU` project, a helper `Injector.exe` 
-is provided in both `x86` and `x64` bitness versions and included in the referencing project 
-as content, copied automatically to the output under `Injector\[x86|x64]\Injector.exe`. 
-This allows you to run the relevant executable that matches the target process bitness. 
-This executable receives the same parameters as the `Launch` method shown above. 
+> NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
+parameter type.
 
-For example, to detect a target process bitness, you could use the following interop code:
+
+## Usage
+
+There are two main usages for this package:
+
+* From AnyCPU code: your code is bitness-agnostic and can be injected into 
+  the target process whether it's x86 or x64.
+* From x86/x64 code: you are injecting into a target process that has the same 
+  bitness as the calling code. 
+
+### AnyCPU code
+
+This is likely the more common scenario. You have .NET code that is AnyCPU and can 
+therefore be injected regardless of the target process bitness. When referencing this 
+package, you will get two (content) folders containing a helper `Injector.exe` for each architecture:
+
+![Screenshot](https://github.com/devlooped/Injector/raw/main/assets/img/content-files.png)
+
+These files are automatically copied to the output directory under `Injector\[x86|x64]\Injector.exe` 
+(and are also included when doing `dotnet publish`). This allows you to run the relevant executable 
+that matches the target process bitness. 
+
+`Injector.exe` usage:
+
+```
+> Injector.exe -?
+Usage: Injector.exe <mainWindowHandle> <assemblyFile> <typeName> <methodName>
+
+Arguments:
+  <processMainWindowHandle>   IntPtr of the main window handle of the process to inject, i.e. Process.MainWindowHandle.
+  <assemblyFile>              The full path to the .NET assembly to load in the remote process.
+  <typeName>                  Full type name of the public static class to invoke in the remote process.
+  <methodName>                Name of the static method in that class to invoke in the remote process. Must be a
+                              static method, which can also receive arguments, such as 'Start:true:42'.
+```
+
+To detect the target process bitness, you can use the following bit of interop:
 
 ```csharp
 static class NativeMethods
@@ -60,8 +80,8 @@ static class NativeMethods
 }
 ```
 
-And then use the following code (note it's similar to the API-based one above) to inject 
-into it:
+And the following code would lookup the target process (in this case, we just get the first instance 
+of `notepad.exe`, as an example), and invoke the right executable:
 
 ```csharp
 var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
@@ -70,34 +90,68 @@ NativeMethods.IsWow64Process(targetProcess.Handle, out var isWow);
 var platform = isWow ? "x86" : "x64";
 
 Process.Start(Path.Combine("Injector", platform, "Injector.exe"),
+    // IntPtr of the main window handle of the process to inject
     targetProcess.MainWindowHandle + " " +
+    // The full path to the .NET assembly to load in the remote process
     Assembly.GetExecutingAssembly().Location + " " +
+    // Full type name of the public static class to invoke in the remote process
     typeof(Startup).FullName + " " +
+    // Name of the static method in that class to invoke in the remote process, 
+    // and any parameters.
     $"{nameof(Startup.Start)}:hello:42:true");
 ```
 
+> NOTE: we can pass typed arguments to the `Startup.Start` method (shown as an example 
+> at the beginning) and type conversion will be applied automatically.
 
 
-Optionally, the injected method call can also receive parameters, in a `{method}:arg1:arg2:argN` format:
+### Platform-specific code
+
+When building platform-specific code, the project would typically have (for a console app, for example):
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<Platforms>x64;x86</Platforms>
+	</PropertyGroup>
+
+</Project>
+```
+
+You would then build for either platform via: `dotnet build --arch x64` or `dotnet build --arch x86`.  
+
+In this case, the bitness of the calling code (that intends to inject itself into a remote process) 
+must match the target process bitness too. Since the bitness of both is the same, you can use the 
+automatically referenced assembly from your code, rather than invoking the helper `Injector.exe` 
+as shown in the first case.
+
+The code will otherwise look similar to the previous case:
+
 
 ```csharp
 var targetProcess = System.Diagnostics.Process.GetProcessesByName("notepad.exe")[0];
 
-Injector.Launch(
+// NOTE: target process bitness must match our own assembly architecture for 
+// this to succeed.
+Devlooped.Injector.Launch(
     // IntPtr of the main window handle of the process to inject
     targetProcess.MainWindowHandle,
     // The full path to the .NET assembly to load in the remote process
     Assembly.GetExecutingAssembly().Location,
     // Full type name of the public static class to invoke in the remote process
-    "MyApp.Startup",
-    // Name of the static method in that class to invoke in the remote process
-    "Start:hello:42:true");
+    typeof(Startup).FullName + " " +
+    // Name of the static method in that class to invoke in the remote process, 
+    // and any parameters.
+    $"{nameof(Startup.Start)}:hello:42:true");
 ```
 
-See [Program.cs](src/Sample/Program.cs) for complete example.
+> NOTE: the `Devlooped.Injector` type will NOT be available on AnyCPU projects
 
-> NOTE: parameter type conversion is supported and happens via the `TypeConverter` associated with the 
-parameter type.
+
+See [Program.cs](src/Sample/Program.cs) for a complete example.
 
 
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
