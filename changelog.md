@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.1.0](https://github.com/devlooped/Injector/tree/v1.1.0) (2022-09-23)
+
+[Full Changelog](https://github.com/devlooped/Injector/compare/v1.0.1...v1.1.0)
+
+:twisted_rightwards_arrows: Merged:
+
+- Allow detecting injection success [\#9](https://github.com/devlooped/Injector/pull/9) (@kzu)
+
 ## [v1.0.1](https://github.com/devlooped/Injector/tree/v1.0.1) (2022-09-09)
 
 [Full Changelog](https://github.com/devlooped/Injector/compare/v1.0.0...v1.0.1)
