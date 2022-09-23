@@ -16,7 +16,7 @@ static HHOOK _messageHookHandle;
 //-----------------------------------------------------------------------------
 //Spying Process functions follow
 //-----------------------------------------------------------------------------
-void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName)
+bool Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName)
 {
 	System::String^ assemblyClassAndMethod = assemblyFile + "$" + typeFullName + "$" + methodName;
 	pin_ptr<const wchar_t> acmLocal = PtrToStringChars(assemblyClassAndMethod);
@@ -52,6 +52,7 @@ void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile,
 						LogMessage("SetWindowsHookEx successful", true);
 						::SendMessage((HWND)windowHandle.ToPointer(), WM_GOBABYGO, (WPARAM)acmRemote, 0);
 						::UnhookWindowsHookEx(_messageHookHandle);
+                        return true;
 					}
 
 					::VirtualFreeEx(hProcess, acmRemote, 0, MEM_RELEASE);
@@ -69,6 +70,8 @@ void Injector::Launch(System::IntPtr windowHandle, System::String^ assemblyFile,
         }
 		::FreeLibrary(hinstDLL);
 	}
+
+    return false;
 }
 
 void Injector::LogMessage(String^ message, bool append)

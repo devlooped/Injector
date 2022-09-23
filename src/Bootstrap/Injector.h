@@ -16,7 +16,7 @@ namespace Devlooped
 	{
 		public:
 
-		static void Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName);
+		static bool Launch(System::IntPtr windowHandle, System::String^ assemblyFile, System::String^ typeFullName, System::String^ methodName);
 
 		static void LogMessage(System::String^ message, bool append);
 	};
