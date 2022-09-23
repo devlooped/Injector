@@ -31,8 +31,10 @@ namespace Devlooped
             var typeName = args[2].Trim('"');
             var methodName = args[3].Trim('"');
 
-            Injector.Launch(mainWindow, assemblyFile, typeName, methodName);
-            return 0;
+            if (Injector.Launch(mainWindow, assemblyFile, typeName, methodName))
+                return 0;
+            else
+                return -1;
         }
     }
 }
