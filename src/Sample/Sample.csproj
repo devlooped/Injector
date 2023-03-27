@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ThisAssembly.Project" Version="1.0.9" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.2.12" />
   </ItemGroup>
 
   <ItemGroup>
