@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Platform)' != ''">
